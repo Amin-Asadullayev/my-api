@@ -1,0 +1,19 @@
+# Local production-like run: docker compose up --build
+# Requires JWT_SECRET (put it in .env or export it).
+services:
+  api:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET (openssl rand -hex 32)}
+      REDIS_URL: redis://redis:6379
+    volumes:
+      - api-data:/data
+    depends_on:
+      - redis
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--save", "", "--appendonly", "no"]
+volumes:
+  api-data:
