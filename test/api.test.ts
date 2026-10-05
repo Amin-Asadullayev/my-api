@@ -6,7 +6,7 @@ import { join } from 'node:path';
 import { after, before, describe, it } from 'node:test';
 import Database from 'better-sqlite3';
 
-// A throwaway movies table and auth DB: the real movies.db is never touched by tests.
+
 const dir = mkdtempSync(join(tmpdir(), 'movies-api-test-'));
 const moviesPath = join(dir, 'movies.db');
 const fixture = new Database(moviesPath);
@@ -40,7 +40,7 @@ before(async () => {
   connectCache();
   server = createApp().listen(0);
   await new Promise((resolve) => server.once('listening', resolve));
-  base = `http://127.0.0.1:${(server.address() as { port: number }).port}`;
+  base = `http:
 });
 
 after(async () => {
@@ -299,16 +299,16 @@ describe('documentation', () => {
   });
 });
 
-// Needs a Redis: TEST_REDIS_URL=redis://localhost:6379/15 npm test
+
 describe('Redis cache', { skip: !process.env.TEST_REDIS_URL }, () => {
   it('serves repeat reads from cache and invalidates on writes', async () => {
-    // Commands fail fast until the connection is up, so wait for the first non-BYPASS answer.
+    
     for (let i = 0; i < 40; i++) {
       if ((await api('/movies/101')).headers.get('x-cache') !== 'BYPASS') break;
       await new Promise((r) => setTimeout(r, 100));
     }
     const { access_token: token } = await login('grace');
-    await api('/movies/100', { method: 'PATCH', token, body: { tagline: 'bust the cache' } }); // bumps the version
+    await api('/movies/100', { method: 'PATCH', token, body: { tagline: 'bust the cache' } }); 
 
     assert.equal((await api('/movies?limit=3&sort=title')).headers.get('x-cache'), 'MISS');
     assert.equal((await api('/movies?limit=3&sort=title')).headers.get('x-cache'), 'HIT');
