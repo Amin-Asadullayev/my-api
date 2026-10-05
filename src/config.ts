@@ -17,7 +17,7 @@ function int(name: string, fallback: number): number {
 let jwtSecret = env.JWT_SECRET;
 if (!jwtSecret) {
   if (isProduction) throw new Error('JWT_SECRET is required when NODE_ENV=production');
-  // Dev only: tokens stop being valid whenever the process restarts.
+  
   jwtSecret = randomBytes(32).toString('hex');
   console.warn('JWT_SECRET not set: using a random secret for this process');
 } else if (jwtSecret.length < 32) {
@@ -28,7 +28,7 @@ export const config = {
   isProduction,
   port: int('PORT', 3000),
   moviesDbPath: env.MOVIES_DB_PATH || 'db/movies.db',
-  // Users and refresh tokens live in their own file so movies.db stays a pure dataset.
+  
   authDbPath: env.AUTH_DB_PATH || 'db/auth.db',
   redisUrl: env.REDIS_URL || undefined,
   cacheTtlSeconds: int('CACHE_TTL_SECONDS', 60),

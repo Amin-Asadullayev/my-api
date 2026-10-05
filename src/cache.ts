@@ -15,7 +15,7 @@ export function connectCache(): void {
     return;
   }
   redis = new Redis(config.redisUrl, {
-    // Fail fast instead of queueing commands: a down cache must never slow requests down.
+    
     enableOfflineQueue: false,
     maxRetriesPerRequest: 1,
     connectTimeout: 2000,
