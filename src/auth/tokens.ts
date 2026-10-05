@@ -20,7 +20,7 @@ export async function signAccessToken(user: AuthUser): Promise<string> {
     .sign(key);
 }
 
-/** Throws if the token is malformed, tampered with, expired or issued by someone else. */
+
 export async function verifyAccessToken(token: string): Promise<AuthUser> {
   const { payload } = await jwtVerify(token, key, { algorithms: ['HS256'], issuer: config.jwtIssuer });
   const id = Number(payload.sub);
@@ -28,7 +28,7 @@ export async function verifyAccessToken(token: string): Promise<AuthUser> {
   return { id, username: payload.username };
 }
 
-/** Refresh tokens are opaque random strings; only their hash is stored. */
+
 export function newRefreshToken(): { token: string; hash: string } {
   const token = randomBytes(32).toString('base64url');
   return { token, hash: hashRefreshToken(token) };

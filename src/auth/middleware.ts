@@ -3,7 +3,7 @@ import { HttpError } from '../errors.js';
 import { type AuthUser, verifyAccessToken } from './tokens.js';
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
+  
   namespace Express {
     interface Request {
       user?: AuthUser;
@@ -11,7 +11,7 @@ declare global {
   }
 }
 
-/** Guards write routes: requires `Authorization: Bearer <access token>`. */
+
 export async function requireAuth(req: Request, res: Response, next: NextFunction): Promise<void> {
   const match = /^Bearer (\S+)$/i.exec(req.headers.authorization ?? '');
   if (!match) {
