@@ -9,7 +9,7 @@ export const moviesRouter = Router();
 
 const withCache = (res: Response, status: CacheStatus) => res.set('X-Cache', status);
 
-// Reads are public.
+
 moviesRouter.get('/movies', async (req, res) => {
   const { page, cache } = await listMovies(listQuerySchema.parse(req.query));
   withCache(res, cache).json(page);
@@ -21,7 +21,7 @@ moviesRouter.get('/movies/:id', async (req, res) => {
   withCache(res, cache).json(movie);
 });
 
-// Writes need a valid access token.
+
 moviesRouter.post('/movies', requireAuth, async (req, res) => {
   const movie = await createMovie(movieInputSchema.parse(req.body));
   res.status(201).location(`/movies/${movie.id}`).json(movie);

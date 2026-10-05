@@ -16,7 +16,7 @@ function parseJson(s: string | null): unknown[] | null {
   }
 }
 
-/** "Action Science Fiction" -> ["Action", "Science Fiction"] */
+
 function parseGenres(s: string | null): string[] {
   if (!s) return [];
   const known = new Set<string>(GENRES);
@@ -93,7 +93,7 @@ const sortColumns = {
 function queryPage(q: ListQuery): Page {
   const filters: (SQL | undefined)[] = [
     q.q ? sql`(${contains(movies.title, q.q)} OR ${contains(movies.originalTitle, q.q)})` : undefined,
-    // Padding with spaces makes this a whole-word match, so "War" does not match "Warrior".
+    
     q.genre ? sql`' ' || ${movies.genres} || ' ' LIKE ${`% ${q.genre} %`}` : undefined,
     q.director ? contains(movies.director, q.director) : undefined,
     q.language ? eq(movies.originalLanguage, q.language) : undefined,
@@ -104,7 +104,7 @@ function queryPage(q: ListQuery): Page {
 
   const total = moviesDb.select({ n: count() }).from(movies).where(where).get()?.n ?? 0;
   const dir = q.order === 'desc' ? desc : asc;
-  // `id` as tie-breaker keeps pagination stable when the sort column has duplicates.
+  
   const rows = moviesDb
     .select()
     .from(movies)
@@ -137,7 +137,7 @@ export async function getMovie(id: number): Promise<{ movie: Movie | null; cache
 
 type Columns = Partial<typeof movies.$inferInsert>;
 
-/** API field names -> table columns. Only the keys present in `input` are returned. */
+
 function toColumns(input: MoviePatch): Columns {
   const c: Columns = {};
   const has = (k: keyof MoviePatch) => input[k] !== undefined;
@@ -193,7 +193,7 @@ export async function createMovie(input: MovieInput): Promise<Movie> {
   return toMovie(row);
 }
 
-/** PUT: replaces every editable field. PATCH: `input` is partial and the rest is untouched. */
+
 export async function updateMovie(id: number, input: MoviePatch, replace: boolean): Promise<Movie | null> {
   const set = replace ? { ...NULL_COLUMNS, ...toColumns(input) } : toColumns(input);
   const row = moviesDb.update(movies).set(set).where(eq(movies.id, id)).returning().get();
