@@ -4,9 +4,9 @@ import { ZodError } from 'zod';
 import { listQuerySchema, idParamSchema, SORT_FIELDS } from './movies/schemas.js';
 import { getMovie, listMovies } from './movies/service.js';
 
-// Read-only interface over the same service (and Redis cache) as the REST API.
-// Field names match the REST responses. Writes go through the authenticated REST endpoints.
-const typeDefs = /* GraphQL */ `
+
+
+const typeDefs =  `
   type ProductionCompany { name: String! id: Int }
   type ProductionCountry { iso_3166_1: String! name: String! }
   type SpokenLanguage { iso_639_1: String! name: String! }
@@ -92,7 +92,7 @@ export const graphqlHandler = createYoga({
     resolvers: {
       Query: {
         movies: async (_root, args: Record<string, unknown>) => {
-          // GraphQL clients may send explicit nulls for "not set".
+          
           const defined = Object.fromEntries(Object.entries(args).filter(([, v]) => v != null));
           try {
             return (await listMovies(listQuerySchema.parse(defined))).page;
