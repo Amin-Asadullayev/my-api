@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
-// The TMDB genre names present in the dataset. `genres` is stored space separated
-// ("Action Science Fiction"), so the multi-word names are the only ambiguity to resolve.
+
+
 export const GENRES = [
   'Action', 'Adventure', 'Animation', 'Comedy', 'Crime', 'Documentary', 'Drama', 'Family',
   'Fantasy', 'Foreign', 'History', 'Horror', 'Music', 'Mystery', 'Romance', 'Science Fiction',
@@ -18,7 +18,7 @@ const optionalText = (max: number) => z.string().trim().max(max);
 
 export const listQuerySchema = z.object({
   page: z.coerce.number().int().min(1).max(1_000_000).default(1),
-  // Asking for more than the maximum is not an error: the page is capped (see meta.limit).
+  
   limit: z.coerce
     .number()
     .int()
@@ -42,7 +42,7 @@ const company = z.strictObject({ name: z.string().min(1).max(200), id: z.number(
 const country = z.strictObject({ iso_3166_1: z.string().length(2), name: z.string().min(1).max(200) });
 const language = z.strictObject({ iso_639_1: z.string().min(2).max(3), name: z.string().min(1).max(200) });
 
-// `id` is assigned by the server and cannot be set or changed by clients.
+
 const movieFields = {
   title: optionalText(300).min(1),
   original_title: optionalText(300).nullable().optional(),
@@ -68,9 +68,9 @@ const movieFields = {
   spoken_languages: z.array(language).max(100).nullable().optional(),
 };
 
-// POST and PUT: full representation (title required, omitted fields become null).
+
 export const movieInputSchema = z.strictObject(movieFields);
-// PATCH: only the given fields change.
+
 export const moviePatchSchema = z.strictObject(movieFields).partial().refine((o) => Object.keys(o).length > 0, {
   message: 'Provide at least one field to update',
 });
