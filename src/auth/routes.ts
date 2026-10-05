@@ -26,7 +26,7 @@ authRouter.post('/auth/register', async (req, res) => {
       .get();
     res.status(201).json(user);
   } catch (err) {
-    // Drizzle wraps the driver error, so the SQLite code is on `cause`.
+    
     const code = (err as { cause?: { code?: string } }).cause?.code ?? (err as { code?: string }).code;
     if (code === 'SQLITE_CONSTRAINT_UNIQUE') {
       throw new HttpError(409, 'username_taken', 'That username is already registered');
@@ -35,9 +35,9 @@ authRouter.post('/auth/register', async (req, res) => {
   }
 });
 
-// --- OAuth 2.0 token endpoint (RFC 6749): password and refresh_token grants ---------------
 
-/** RFC 6749 §5.2 error body; the token endpoint does not use the API's usual error shape. */
+
+
 function oauthError(res: Response, status: number, error: string, description: string): void {
   res.status(status).set({ 'Cache-Control': 'no-store', Pragma: 'no-cache' }).json({ error, error_description: description });
 }
@@ -58,7 +58,7 @@ async function issueTokens(res: Response, user: AuthUser): Promise<void> {
   });
 }
 
-// Verified against when the username does not exist, so response time does not reveal which usernames are registered.
+
 const dummyHash = argon2.hash('not-a-real-password');
 
 const tokenRequestSchema = z.object({
@@ -85,7 +85,7 @@ authRouter.post('/oauth/token', async (req, res) => {
 
   if (body.grant_type === 'refresh_token') {
     if (!body.refresh_token) return oauthError(res, 400, 'invalid_request', 'refresh_token is required');
-    // Rotation: a refresh token works exactly once. Deleting it here is atomic, so a replay finds nothing.
+    
     const used = authDb
       .delete(refreshTokens)
       .where(eq(refreshTokens.tokenHash, hashRefreshToken(body.refresh_token)))
@@ -102,7 +102,7 @@ authRouter.post('/oauth/token', async (req, res) => {
   return oauthError(res, 400, 'unsupported_grant_type', 'Supported grant types: password, refresh_token');
 });
 
-// RFC 7009: always answers 200, whether or not the token existed.
+
 authRouter.post('/oauth/revoke', (req, res) => {
   const token = typeof req.body?.token === 'string' ? req.body.token : undefined;
   if (token) authDb.delete(refreshTokens).where(eq(refreshTokens.tokenHash, hashRefreshToken(token))).run();
