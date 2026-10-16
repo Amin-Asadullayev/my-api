@@ -4,8 +4,6 @@ import { ZodError } from 'zod';
 import { listQuerySchema, idParamSchema, SORT_FIELDS } from './movies/schemas.js';
 import { getMovie, listMovies } from './movies/service.js';
 
-
-
 const typeDefs =  `
   type ProductionCompany { name: String! id: Int }
   type ProductionCountry { iso_3166_1: String! name: String! }
@@ -92,7 +90,6 @@ export const graphqlHandler = createYoga({
     resolvers: {
       Query: {
         movies: async (_root, args: Record<string, unknown>) => {
-          
           const defined = Object.fromEntries(Object.entries(args).filter(([, v]) => v != null));
           try {
             return (await listMovies(listQuerySchema.parse(defined))).page;

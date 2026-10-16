@@ -1,7 +1,6 @@
 import { z } from 'zod';
 import { GENRES, MAX_PAGE_SIZE, movieInputSchema, moviePatchSchema, SORT_FIELDS } from './movies/schemas.js';
 
-
 const fromZod = (schema: z.ZodType) => z.toJSONSchema(schema, { target: 'openapi-3.0', io: 'input' });
 
 const ref = (name: string) => ({ $ref: `#/components/schemas/${name}` });
@@ -198,7 +197,7 @@ export const openApiSpec = {
           ...summaryProps,
           original_title: nullable('string', { example: 'Avatar' }),
           overview: nullable('string'),
-          homepage: nullable('string', { example: 'http:
+          homepage: nullable('string', { example: 'http://www.avatarmovie.com/' }),
           budget: nullable('integer', { example: 237000000 }),
           revenue: nullable('integer', { example: 2787965087 }),
           keywords: nullable('string', { description: 'Space separated', example: 'culture clash future space war' }),

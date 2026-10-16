@@ -1,5 +1,3 @@
-# Local production-like run: docker compose up --build
-# Requires JWT_SECRET (put it in .env or export it).
 services:
   api:
     build: .

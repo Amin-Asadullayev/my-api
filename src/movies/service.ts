@@ -16,7 +16,6 @@ function parseJson(s: string | null): unknown[] | null {
   }
 }
 
-
 function parseGenres(s: string | null): string[] {
   if (!s) return [];
   const known = new Set<string>(GENRES);
@@ -93,7 +92,6 @@ const sortColumns = {
 function queryPage(q: ListQuery): Page {
   const filters: (SQL | undefined)[] = [
     q.q ? sql`(${contains(movies.title, q.q)} OR ${contains(movies.originalTitle, q.q)})` : undefined,
-    
     q.genre ? sql`' ' || ${movies.genres} || ' ' LIKE ${`% ${q.genre} %`}` : undefined,
     q.director ? contains(movies.director, q.director) : undefined,
     q.language ? eq(movies.originalLanguage, q.language) : undefined,
@@ -104,7 +102,6 @@ function queryPage(q: ListQuery): Page {
 
   const total = moviesDb.select({ n: count() }).from(movies).where(where).get()?.n ?? 0;
   const dir = q.order === 'desc' ? desc : asc;
-  
   const rows = moviesDb
     .select()
     .from(movies)
@@ -136,7 +133,6 @@ export async function getMovie(id: number): Promise<{ movie: Movie | null; cache
 }
 
 type Columns = Partial<typeof movies.$inferInsert>;
-
 
 function toColumns(input: MoviePatch): Columns {
   const c: Columns = {};
@@ -192,7 +188,6 @@ export async function createMovie(input: MovieInput): Promise<Movie> {
   await invalidateMovies();
   return toMovie(row);
 }
-
 
 export async function updateMovie(id: number, input: MoviePatch, replace: boolean): Promise<Movie | null> {
   const set = replace ? { ...NULL_COLUMNS, ...toColumns(input) } : toColumns(input);

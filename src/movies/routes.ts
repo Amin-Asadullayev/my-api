@@ -9,7 +9,6 @@ export const moviesRouter = Router();
 
 const withCache = (res: Response, status: CacheStatus) => res.set('X-Cache', status);
 
-
 moviesRouter.get('/movies', async (req, res) => {
   const { page, cache } = await listMovies(listQuerySchema.parse(req.query));
   withCache(res, cache).json(page);
@@ -20,7 +19,6 @@ moviesRouter.get('/movies/:id', async (req, res) => {
   if (!movie) throw notFound('Movie');
   withCache(res, cache).json(movie);
 });
-
 
 moviesRouter.post('/movies', requireAuth, async (req, res) => {
   const movie = await createMovie(movieInputSchema.parse(req.body));

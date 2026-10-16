@@ -1,5 +1,4 @@
 FROM node:20-bookworm-slim AS build
-# Native modules (argon2, better-sqlite3) may need compiling when no prebuilt binary matches.
 RUN apt-get update && apt-get install -y --no-install-recommends python3 make g++ && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 COPY package.json package-lock.json ./
@@ -19,8 +18,6 @@ WORKDIR /app
 COPY package.json ./
 COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/dist ./dist
-# The dataset ships inside the image and is copied to the data volume on first start,
-# so writes (and users) survive redeploys when /data is a persistent volume.
 COPY db/movies.db ./seed/movies.db
 RUN mkdir -p /data && chown node:node /data
 USER node

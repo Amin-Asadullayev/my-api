@@ -4,7 +4,6 @@ import { config } from '../src/config.js';
 import * as moviesSchema from './schema/movies.js';
 import * as usersSchema from './schema/users.js';
 
-// Default journal mode on purpose: switching to WAL would rewrite movies.db's header.
 const moviesClient = new Database(config.moviesDbPath, { fileMustExist: true });
 export const moviesDb = drizzle({ client: moviesClient });
 export const { movies } = moviesSchema;

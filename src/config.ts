@@ -17,7 +17,6 @@ function int(name: string, fallback: number): number {
 let jwtSecret = env.JWT_SECRET;
 if (!jwtSecret) {
   if (isProduction) throw new Error('JWT_SECRET is required when NODE_ENV=production');
-  
   jwtSecret = randomBytes(32).toString('hex');
   console.warn('JWT_SECRET not set: using a random secret for this process');
 } else if (jwtSecret.length < 32) {
@@ -28,7 +27,6 @@ export const config = {
   isProduction,
   port: int('PORT', 3000),
   moviesDbPath: env.MOVIES_DB_PATH || 'db/movies.db',
-  
   authDbPath: env.AUTH_DB_PATH || 'db/auth.db',
   redisUrl: env.REDIS_URL || undefined,
   cacheTtlSeconds: int('CACHE_TTL_SECONDS', 60),

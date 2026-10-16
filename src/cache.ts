@@ -15,7 +15,6 @@ export function connectCache(): void {
     return;
   }
   redis = new Redis(config.redisUrl, {
-    
     enableOfflineQueue: false,
     maxRetriesPerRequest: 1,
     connectTimeout: 2000,
@@ -35,11 +34,6 @@ export async function closeCache(): Promise<void> {
   redis = null;
 }
 
-/**
- * Read-through cache for movie reads. Keys embed a version number that every write bumps,
- * so a write invalidates all cached lists and items at once without scanning Redis;
- * stale versions simply expire through their TTL. Any Redis failure falls back to `load`.
- */
 export async function cachedMovies<T>(
   key: string,
   load: () => T | Promise<T>,

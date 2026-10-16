@@ -26,7 +26,6 @@ authRouter.post('/auth/register', async (req, res) => {
       .get();
     res.status(201).json(user);
   } catch (err) {
-    
     const code = (err as { cause?: { code?: string } }).cause?.code ?? (err as { code?: string }).code;
     if (code === 'SQLITE_CONSTRAINT_UNIQUE') {
       throw new HttpError(409, 'username_taken', 'That username is already registered');
@@ -34,9 +33,6 @@ authRouter.post('/auth/register', async (req, res) => {
     throw err;
   }
 });
-
-
-
 
 function oauthError(res: Response, status: number, error: string, description: string): void {
   res.status(status).set({ 'Cache-Control': 'no-store', Pragma: 'no-cache' }).json({ error, error_description: description });
@@ -57,7 +53,6 @@ async function issueTokens(res: Response, user: AuthUser): Promise<void> {
     refresh_token: refresh.token,
   });
 }
-
 
 const dummyHash = argon2.hash('not-a-real-password');
 
@@ -85,7 +80,6 @@ authRouter.post('/oauth/token', async (req, res) => {
 
   if (body.grant_type === 'refresh_token') {
     if (!body.refresh_token) return oauthError(res, 400, 'invalid_request', 'refresh_token is required');
-    
     const used = authDb
       .delete(refreshTokens)
       .where(eq(refreshTokens.tokenHash, hashRefreshToken(body.refresh_token)))
@@ -101,7 +95,6 @@ authRouter.post('/oauth/token', async (req, res) => {
 
   return oauthError(res, 400, 'unsupported_grant_type', 'Supported grant types: password, refresh_token');
 });
-
 
 authRouter.post('/oauth/revoke', (req, res) => {
   const token = typeof req.body?.token === 'string' ? req.body.token : undefined;

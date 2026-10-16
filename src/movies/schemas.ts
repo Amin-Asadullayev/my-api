@@ -1,7 +1,5 @@
 import { z } from 'zod';
 
-
-
 export const GENRES = [
   'Action', 'Adventure', 'Animation', 'Comedy', 'Crime', 'Documentary', 'Drama', 'Family',
   'Fantasy', 'Foreign', 'History', 'Horror', 'Music', 'Mystery', 'Romance', 'Science Fiction',
@@ -18,7 +16,6 @@ const optionalText = (max: number) => z.string().trim().max(max);
 
 export const listQuerySchema = z.object({
   page: z.coerce.number().int().min(1).max(1_000_000).default(1),
-  
   limit: z.coerce
     .number()
     .int()
@@ -41,7 +38,6 @@ export const idParamSchema = z.object({ id: z.coerce.number().int().min(1) });
 const company = z.strictObject({ name: z.string().min(1).max(200), id: z.number().int().optional() });
 const country = z.strictObject({ iso_3166_1: z.string().length(2), name: z.string().min(1).max(200) });
 const language = z.strictObject({ iso_639_1: z.string().min(2).max(3), name: z.string().min(1).max(200) });
-
 
 const movieFields = {
   title: optionalText(300).min(1),
@@ -67,7 +63,6 @@ const movieFields = {
   production_countries: z.array(country).max(100).nullable().optional(),
   spoken_languages: z.array(language).max(100).nullable().optional(),
 };
-
 
 export const movieInputSchema = z.strictObject(movieFields);
 

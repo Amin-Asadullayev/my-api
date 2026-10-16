@@ -6,7 +6,6 @@ import { join } from 'node:path';
 import { after, before, describe, it } from 'node:test';
 import Database from 'better-sqlite3';
 
-
 const dir = mkdtempSync(join(tmpdir(), 'movies-api-test-'));
 const moviesPath = join(dir, 'movies.db');
 const fixture = new Database(moviesPath);
@@ -40,7 +39,7 @@ before(async () => {
   connectCache();
   server = createApp().listen(0);
   await new Promise((resolve) => server.once('listening', resolve));
-  base = `http:
+  base = `http://127.0.0.1:${(server.address() as { port: number }).port}`;
 });
 
 after(async () => {
@@ -299,16 +298,14 @@ describe('documentation', () => {
   });
 });
 
-
 describe('Redis cache', { skip: !process.env.TEST_REDIS_URL }, () => {
   it('serves repeat reads from cache and invalidates on writes', async () => {
-    
     for (let i = 0; i < 40; i++) {
       if ((await api('/movies/101')).headers.get('x-cache') !== 'BYPASS') break;
       await new Promise((r) => setTimeout(r, 100));
     }
     const { access_token: token } = await login('grace');
-    await api('/movies/100', { method: 'PATCH', token, body: { tagline: 'bust the cache' } }); 
+    await api('/movies/100', { method: 'PATCH', token, body: { tagline: 'bust the cache' } });
 
     assert.equal((await api('/movies?limit=3&sort=title')).headers.get('x-cache'), 'MISS');
     assert.equal((await api('/movies?limit=3&sort=title')).headers.get('x-cache'), 'HIT');

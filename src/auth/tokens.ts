@@ -20,14 +20,12 @@ export async function signAccessToken(user: AuthUser): Promise<string> {
     .sign(key);
 }
 
-
 export async function verifyAccessToken(token: string): Promise<AuthUser> {
   const { payload } = await jwtVerify(token, key, { algorithms: ['HS256'], issuer: config.jwtIssuer });
   const id = Number(payload.sub);
   if (!Number.isInteger(id) || typeof payload.username !== 'string') throw new Error('bad claims');
   return { id, username: payload.username };
 }
-
 
 export function newRefreshToken(): { token: string; hash: string } {
   const token = randomBytes(32).toString('base64url');
