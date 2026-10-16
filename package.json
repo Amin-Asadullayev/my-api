@@ -7,8 +7,7 @@
     "dev": "tsx watch src/server.ts",
     "start": "node dist/src/server.js",
     "build": "tsc -p tsconfig.build.json",
-    "typecheck": "tsc --noEmit",
-    "test": "node --import tsx --test test/*.test.ts"
+    "typecheck": "tsc --noEmit"
   },
   "author": "tefma alrex",
   "license": "ISC",

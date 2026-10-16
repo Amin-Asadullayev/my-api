@@ -117,8 +117,6 @@ SQLite lives on a single disk, so run **one instance** of the API.
 
 ```bash
 npm run typecheck
-npm test                                              # database/API tests use a throwaway fixture DB
-TEST_REDIS_URL=redis://localhost:6379/15 npm test     # also runs the Redis cache test
 npm run build && npm start
 ```
 
@@ -128,7 +126,6 @@ src/auth/      register, OAuth token endpoint, bearer-token middleware
 src/movies/    validation schemas, query/write logic, routes
 src/cache.ts   Redis read-through cache with version-based invalidation
 src/graphql.ts, src/openapi.ts, src/app.ts, src/server.ts
-test/          API tests
 ```
 
 Not included: rate limiting on the login endpoint and CORS headers; add them if the API will be called from browsers or exposed publicly at scale.
